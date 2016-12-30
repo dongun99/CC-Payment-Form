@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flip card demo</title>
+    <meta name="viewport" content="initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet">
+    <link href="css/paymentfont.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <style>
+        body {
+            font: .85em/1.2em Arial;
+        }
+        
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+        
+        .demo-container {
+            max-width: 300px;
+            margin: 50px auto;
+        }
+        
+        #payment-form-container {
+            display: flex;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            -ms-flex-flow: row wrap;
+            flex-flow: row wrap;
+        }
+        
+        input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: 1px solid #ccc;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            display: block;
+            height: 37px;
+            height: 2.3125rem;
+            margin: 0;
+            padding: 8px;
+            padding: 0.5rem;
+            width: 100%;
+        }
+        
+        input:FOCUS {
+            border: 1px solid lightblue;
+        }
+        
+        input.half-line {
+            width: 50%;
+        }
+        
+        input.half-line+input.half-line {
+            border-left: none;
+        }
+        
+        #card-container {
+            margin: 16px auto;
+            margin: 1rem auto;
+            -webkit-perspective: 1000px;
+            perspective: 1000px;
+        }
+        
+        #card-container.flip #card-flipper {
+            -webkit-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+        
+        #card-container,
+        #card-front,
+        #card-back {
+            width: 300px;
+            height: 175px;
+            font-family: 'Droid Sans Mono', monospace;
+        }
+        
+        #card-flipper {
+            width: 300px;
+            height: 175px;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0px 0px 12px 5px rgba(0, 0, 0, 0.05);
+            -webkit-transition: 0.6s;
+            transition: 0.6s;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+        }
+        
+        #card-front,
+        #card-back {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIHN0b3AtY29sb3I9IiMwMDRkOTEiIHN0b3Atb3BhY2l0eT0iMSIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iIzAwNjhiNSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjAuNDQ3Ii8+PHN0b3Agc3RvcC1jb2xvcj0iIzA2NGQ5MSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjdnNnZykiIC8+PC9zdmc+);
+            background-image: -webkit-gradient(linear, 0% 100%, 100% 0%, color-stop(0, rgb(0, 77, 145)), color-stop(0.447, rgb(0, 104, 181)), color-stop(1, rgb(6, 77, 145)));
+            /* Android 2.3 */
+            background-image: -webkit-repeating-linear-gradient(bottom left, rgb(0, 77, 145) 0%, rgb(0, 104, 181) 44.7%, rgb(6, 77, 145) 100%);
+            /* IE10+ */
+            background-image: repeating-linear-gradient(to top right, rgb(0, 77, 145) 0%, rgb(0, 104, 181) 44.7%, rgb(6, 77, 145) 100%);
+            background-image: -ms-repeating-linear-gradient(bottom left, rgb(0, 77, 145) 0%, rgb(0, 104, 181) 44.7%, rgb(6, 77, 145) 100%);
+        }
+        
+        #card-front {
+            z-index: 2;
+            /* for firefox 31 */
+            -webkit-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+            color: #fff;
+            background-color: #025ba3;
+            /* IE9, iOS 3.2+ */
+        }
+        
+        #card-back {
+            -webkit-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+        
+        #card-front #cardIcon {
+            position: absolute;
+            top: 12px;
+            right: 10px;
+        }
+        
+        #card-front #cardIcon i {
+            font-size: 2rem;
+        }
+        
+        #card-front #phCardNumber {
+            position: absolute;
+            top: 96px;
+            left: 16px;
+            opacity: .8em;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=NaN)";
+            font-size: 1.2em;
+            text-shadow: 0px 1px 0px #000;
+        }
+        
+        #card-front #phCardholder {
+            position: absolute;
+            top: 126px;
+            left: 16px;
+            text-transform: uppercase;
+            font-weight: bold;
+            opacity: 1em;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=NaN)";
+            font-size: .9em;
+            text-shadow: 0px 1px 0px #000;
+            max-width: 170px;
+            overflow: hidden;
+        }
+        
+        #card-front #phExpiry {
+            position: absolute;
+            top: 126px;
+            left: 228px;
+            text-transform: uppercase;
+            font-weight: bold;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=NaN)";
+            font-size: .9em;
+            text-shadow: 0px 1px 0px #000;
+        }
+        
+        #card-front #cardChip {
+            position: absolute;
+            top: 55px;
+            left: 16px;
+            height: 34px;
+            width: 44px;
+            border-radius: 8px;
+            background: #ffffff;
+            opacity: .7;
+        }
+        
+        #card-front #cardChip>span {
+            display: block;
+            height: 14px;
+            margin-top: 10px;
+            border: 1px solid rgb(0, 77, 145);
+            border-right: none;
+            border-left: none;
+        }
+        
+        #card-front #cardChip>span>span {
+            display: block;
+            height: 24px;
+            margin: -6px auto 0;
+            border: 1px solid rgb(0, 77, 145);
+            background: #fff;
+            width: 70%;
+            border-radius: 8px;
+        }
+        
+        #card-front #phValidThru {
+            display: block;
+            position: absolute;
+            top: 126px;
+            left: 196px;
+            width: 10px;
+            font: .5em/1em Arial;
+            text-transform: uppercase;
+            opacity: 0.6;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=NaN)";
+        }
+        
+        #card-back #phCVC {
+            position: absolute;
+            top: 80px;
+            left: 210px;
+            height: 34px;
+            width: 46px;
+            border: 2px solid red;
+            line-height: 2rem;
+            padding-left: 4px;
+            background: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+            opacity: .8em;
+        }
+        
+        #card-back #phSigStrip {
+            position: absolute;
+            top: 80px;
+            left: 10px;
+            width: 200px;
+            height: 34px;
+            background: #eee;
+        }
+        
+        #card-back #phUseMsg {
+            font: .5em/1em Arial;
+            color: #fff;
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            opacity: .7;
+            text-transform: uppercase;
+        }
+        
+        #card-back #phMagStrip {
+            position: absolute;
+            top: 16px;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: #000;
+            opacity: 0.7;
+        }
+        
+        .invalid {
+            color: yellow;
+        }
+        
+        .noborder {
+            border: none !important;
+        }
+    </style>
+    <div class="demo-container">
+
+        <div id="card-container">
+            <div id="card-flipper">
+                <div id="card-front">
+                    <span id="cardChip"><span><span></span></span>
+                    </span>
+                    <span id="cardIcon"><i id="cardType" class="pf"></i></span>
+                    <span id="phCardNumber"></span>
+                    <span id="phCardholder"></span>
+                    <span id="phValidThru">Valid Thru</span>
+                    <span id="phExpiry"></span>
+                </div>
+                <div id="card-back">
+                    <span id="phMagStrip"></span>
+                    <span id="phUseMsg">Use is subject to the cardholder agreement</span>
+                    <span id="phSigStrip"></span>
+                    <span id="phCVC"></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="payment-form-container">
+
+            <input id="CardNumber" placeholder="Card number" type="tel" maxlength="19" name="number">
+            <input id="Cardholder" placeholder="Full name" type="text" name="name">
+            <input id="Expiry" placeholder="MM/YY" class="half-line" maxlength="5" type="tel" name="expiry">
+            <input id="CVC" placeholder="CVC" class="half-line" maxlength="4" name="cvc">
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+
+            var ccFormats = {
+                mastercard: '/5[1-5][0-9]{14}/',
+                visa: '/^4(?:[0-9]{15})/'
+            };
+
+            var cardNumberInput = document.getElementById('CardNumber'),
+                cardNumberPh = document.getElementById('phCardNumber'),
+                cardHolderInput = document.getElementById('Cardholder'),
+                cardHolderPh = document.getElementById('phCardholder'),
+                cvcInput = document.getElementById('CVC'),
+                cvcPh = document.getElementById('phCVC'),
+                expiryInput = document.getElementById('Expiry'),
+                expiryPh = document.getElementById('phExpiry'),
+                cardContainer = document.getElementById('card-container');
+
+            cardNumberInput.addEventListener('keydown', filterNumberInput);
+            cardNumberInput.addEventListener('keyup', formatCardNumber);
+            cardNumberInput.addEventListener('blur', validateCardnumber);
+
+            cardHolderInput.addEventListener('keyup', function(e) {
+                cardHolderPh.innerHTML = e.target.value;
+            });
+
+            expiryInput.addEventListener('keydown', filterNumberInput);
+            expiryInput.addEventListener('input', reformatDate);
+            expiryInput.addEventListener('keyup', function() {
+                expiryPh.innerHTML = this.value;
+            });
+            expiryInput.addEventListener('blur', validateExpiry);
+
+            cvcInput.addEventListener('keyup', function() {
+                cvcPh.innerHTML = this.value;
+                (this.value !== '') ?
+                cvcPh.setAttribute('class', 'noborder'):
+                    cvcPh.removeAttribute('class');
+
+
+            });
+            cvcInput.addEventListener('keydown', filterNumberInput);
+
+            cvcInput.addEventListener('focus', function() {
+                cardContainer.classList.toggle('flip');
+            });
+
+            cvcInput.addEventListener('blur', function() {
+                cardContainer.classList.toggle('flip');
+            });
+
+            function validateCardnumber(e) {
+                var cardNum = e.target.value.replace(/(\s)/g, '');
+                if (cardNum !== '') {
+                    if (!cardNum.match(/^4(?:[0-9]{15})/)) {
+                        console.log('invalid card number');
+                        cardNumberPh.classList.add('invalid');
+                        return;
+                    }
+                }
+
+                expiryPh.removeAttribute('class');
+            }
+
+            function validateExpiry(e) {
+                if (e.target.value !== '') {
+
+                    var parts = e.target.value.match(/^(\d+)\/?(\d*)/);
+
+                    if (!parts[1] || (parseInt(parts[1]) < 1 || parseInt(parts[1]) > 12)) {
+                        console.log('invalid month');
+                        expiryPh.classList.add('invalid');
+                        return;
+                    }
+
+                    if (!parts[2] || (parseInt(parts[2]) < 16 || parseInt(parts[2]) > 30)) {
+                        console.log('invalid year');
+                        expiryPh.classList.add('invalid');
+                        return;
+                    }
+
+                    if (parts[1] && parts[2]) {
+                        var todaysDate = Date();
+                        var cardDate = new Date('20' + parts[2], parts[1] - 1, '01');
+                        if (cardDate < todaysDate) {
+                            console.log('card has expired');
+                            expiryPh.classList.add('invalid');
+                            return;
+                        }
+                    }
+
+                    expiryPh.removeAttribute('class');
+                }
+            }
+
+            function formatCardNumber(e) {
+                var keyVal = getCharFromKeyCode(e.which);
+
+                if (/(?:^|\s)(\d{4})$/.test(e.target.value)) {
+                    e.preventDefault();
+                    e.target.value += ' ';
+                }
+
+                cardNumberPh.innerHTML = e.target.value;
+
+                var cardTypePh = document.getElementById('cardType');
+                if (e.target.value.substring(0, 1) === '4') {
+                    cardTypePh.setAttribute("class", "pf pf-visa");
+                } else if (e.target.value.substring(0, 1) === '5') {
+                    cardTypePh.setAttribute("class", "pf pf-mastercard");
+                } else {
+                    cardTypePh.removeAttribute("class");
+                }
+            }
+
+            function getCharFromKeyCode(keyCode) {
+                if (keyCode > 96 && keyCode <= 105) {
+                    return String.fromCharCode(keyCode - 48);
+                } else {
+                    return String.fromCharCode(keyCode);
+                }
+            }
+
+            function filterNumberInput(e) {
+                // Allow: backspace, delete, tab, escape, enter
+                if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1 ||
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    ([65, 67, 86, 88].indexOf(e.keyCode) !== -1 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            }
+
+            function reformatDate(e) {
+                var value = e.target.value,
+                    parts = value.match(/^(\d+)\/?(\d*)/),
+                    month,
+                    year;
+
+                if (!parts) {
+                    //do nothing
+                    return;
+                }
+
+                month = parts[1] || '';
+                year = parts[2] || '';
+
+                if (month.length < 2 && month > 1) {
+                    month = '0' + month;
+                    e.target.value = month;
+                    e.target.selectionStart += 1;
+                } else if (month.length > 2) {
+                    year = month.substring(2) + year;
+                    month = month.substring(0, 2);
+
+                    e.target.value = month + '/' + year;
+                    // move the cursor over 1 since we've added the '/' char
+                    e.target.selectionStart += 1;
+                } else if (year.length > 0) {
+                    e.target.value = month + '/' + year;
+                } else if (month.length < 2) {
+                    e.target.value = month;
+                } else {
+                    e.target.value = month + '/';
+                }
+            };
+
+        });
+    </script>
+</body>
+
+</html>
