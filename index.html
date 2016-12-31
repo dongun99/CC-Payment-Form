@@ -343,8 +343,6 @@
 
             var cardNumberInput = document.getElementById('cardnumber'),
                 cardNumberPh = document.getElementById('ph-cardnumber'),
-                cardHolderInput = document.getElementById('cardholder'),
-                cardHolderPh = document.getElementById('ph-cardholder'),
                 cvcInput = document.getElementById('cvc'),
                 cvcPh = document.getElementById('ph-cvc'),
                 expiryInput = document.getElementById('expiry'),
@@ -402,7 +400,7 @@
 
                 foundCardType = getCardType(e.target.value);
 
-                // if not delete
+                // if not backspace
                 if (e.which != 8) {
 
                     if (foundCardType) {
@@ -420,10 +418,6 @@
                                 e.target.value += ' ';
                             }
                         }
-
-                        setTimeout(function() {
-                            cardNumberPh.innerHTML = e.target.value;
-                        }, 0);
                     }
                 }
             }
@@ -494,7 +488,7 @@
                 } else {
                     e.target.value = month + '/';
                 }
-            };
+            }
 
 
             function validateCardNumber(e) {
