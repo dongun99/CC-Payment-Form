@@ -362,15 +362,12 @@
             cardNumberInput.addEventListener('keypress', filterNumberInput);
             cardNumberInput.addEventListener('keypress', formatCardNumber);
             cardNumberInput.addEventListener('blur', validateCardNumber);
-
             expiryInput.addEventListener('keypress', filterNumberInput);
             expiryInput.addEventListener('keyup', reformatDate);
             expiryInput.addEventListener('blur', validateExpiry);
-
             cvcInput.addEventListener('keypress', filterNumberInput);
             cvcInput.addEventListener('focus', flipCard);
             cvcInput.addEventListener('blur', flipCard);
-
             cvcInput.addEventListener('keyup', function(e) {
                 var className = (e.target.value !== '') ? 'noborder' : '';
                 cvcPh.setAttribute('class', className);
@@ -533,7 +530,6 @@
                     expiryPh.removeAttribute('class');
                 }
             }
-
 
         });
     </script>
