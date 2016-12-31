@@ -284,10 +284,10 @@
         </div>
 
         <div id="payment-form-container">
-            <input id="cardnumber" placeholder="Card number" type="tel" maxlength="19" name="number">
+            <input id="cardnumber" placeholder="Card number" type="text" maxlength="19" name="number">
             <input id="cardholder" placeholder="Full name" type="text" name="name">
-            <input id="expiry" placeholder="MM/YY" class="half-line" maxlength="5" type="tel" name="expiry">
-            <input id="cvc" placeholder="CVC" class="half-line" maxlength="4" name="cvc">
+            <input id="expiry" placeholder="MM/YY" class="half-line" maxlength="5" type="text" name="expiry">
+            <input id="cvc" placeholder="CVC" class="half-line" maxlength="4" type="text" name="cvc">
         </div>
     </div>
 
@@ -350,37 +350,37 @@
                 expiryInput = document.getElementById('expiry'),
                 expiryPh = document.getElementById('ph-expiry'),
                 cardContainer = document.getElementById('card-container'),
-                cardIconTypePh = document.getElementById('card-icon-type');
+                cardIconTypePh = document.getElementById('card-icon-type'),
+                cardInputsContainer = document.getElementById('payment-form-container');
+
+            // add event to each input to bind their matching field on the cc image    
+            var formInputsNodes = [].slice.call(cardInputsContainer.querySelectorAll('input[type=text]'));
+            formInputsNodes.forEach(function(input) {
+                input.addEventListener('keyup', function(e) {
+                    document.getElementById('ph-' + input.getAttribute('id')).innerHTML = e.target.value;
+                });
+            });
 
             cardNumberInput.addEventListener('keypress', filterNumberInput);
-            cardNumberInput.addEventListener('keyup', formatCardNumber);
+            cardNumberInput.addEventListener('keypress', formatCardNumber);
             cardNumberInput.addEventListener('blur', validateCardNumber);
-
-            cardHolderInput.addEventListener('keyup', function(e) {
-                cardHolderPh.innerHTML = e.target.value;
-            });
 
             expiryInput.addEventListener('keypress', filterNumberInput);
             expiryInput.addEventListener('keyup', reformatDate);
             expiryInput.addEventListener('blur', validateExpiry);
-            expiryInput.addEventListener('keyup', function() {
-                expiryPh.innerHTML = this.value;
-            });
-
-            cvcInput.addEventListener('keyup', function() {
-                cvcPh.innerHTML = this.value;
-                (this.value !== '') ?
-                cvcPh.setAttribute('class', 'noborder'):
-                    cvcPh.removeAttribute('class');
-            });
 
             cvcInput.addEventListener('keypress', filterNumberInput);
-            cvcInput.addEventListener('focus', function() {
-                cardContainer.classList.toggle('flip');
+            cvcInput.addEventListener('focus', flipCard);
+            cvcInput.addEventListener('blur', flipCard);
+
+            cvcInput.addEventListener('keyup', function(e) {
+                var className = (e.target.value !== '') ? 'noborder' : '';
+                cvcPh.setAttribute('class', className);
             });
-            cvcInput.addEventListener('blur', function() {
+
+            function flipCard() {
                 cardContainer.classList.toggle('flip');
-            });
+            }
 
             function getCardType(cardNum) {
                 var i,
@@ -396,7 +396,8 @@
             }
 
             function formatCardNumber(e) {
-                var keyVal = getCharFromKeyCode(e.which),
+                var kCode = e.keyCode || e.which,
+                    keyVal = getCharFromKeyCode(kCode),
                     cardSpacePattern;
 
                 foundCardType = getCardType(e.target.value);
@@ -437,7 +438,7 @@
 
             function filterNumberInput(e) {
                 var kCode = e.keyCode || e.which;
-                console.log(kCode);
+
                 // Allow: delete, backspace, tab, escape, enter
                 if ([46, 8, 9, 27, 13].indexOf(kCode) !== -1 ||
                     // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
@@ -503,10 +504,7 @@
                         cardNumberPh.classList.add('invalid');
                         return;
                     }
-                } else {
-                    cardNumberPh.innerHTML = '';
                 }
-
 
                 cardNumberPh.removeAttribute('class');
             }
