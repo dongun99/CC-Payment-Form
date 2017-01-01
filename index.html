@@ -284,7 +284,7 @@
         </div>
 
         <div id="payment-form-container">
-            <input id="cardnumber" placeholder="Card number" type="text" maxlength="19" name="number">
+            <input id="cardnumber" placeholder="Card number" type="text" maxlength="20" name="number">
             <input id="cardholder" placeholder="Full name" type="text" name="name">
             <input id="expiry" placeholder="MM/YY" class="half-line" maxlength="5" type="text" name="expiry">
             <input id="cvc" placeholder="CVC" class="half-line" maxlength="4" type="text" name="cvc">
@@ -393,27 +393,25 @@
             function formatCardNumber(e) {
                 var kCode = e.keyCode || e.which,
                     keyVal = getCharFromKeyCode(kCode),
-                    cardSpacePattern;
+                    cardSpacePattern,
+                    inputVal = e.target.value + keyVal;
 
-                foundCardType = getCardType(e.target.value);
+                foundCardType = getCardType(inputVal);
 
-                // if not backspace
-                if (e.which != 8) {
+                if (foundCardType) {
+                    cardSpacePattern = (foundCardType.spacePattern) ? foundCardType.spacePattern : _defaultCardSpacePattern;
+                    cardIconTypePh.setAttribute('class', 'pf ' + foundCardType.css);
+                } else {
+                    cardSpacePattern = _defaultCardSpacePattern;
+                    cardIconTypePh.removeAttribute('class');
+                }
 
-                    if (foundCardType) {
-                        cardSpacePattern = (foundCardType.spacePattern) ? foundCardType.spacePattern : _defaultCardSpacePattern;
-                        cardIconTypePh.setAttribute('class', 'pf ' + foundCardType.css);
-                    } else {
-                        cardSpacePattern = _defaultCardSpacePattern;
-                        cardIconTypePh.removeAttribute('class');
-                    }
-
-                    if (_digitPattern.test(keyVal)) {
-                        if (cardSpacePattern.test(e.target.value)) {
-                            e.preventDefault();
-                            if (e.target.value.length <= 14) {
-                                e.target.value += ' ';
-                            }
+                if (_digitPattern.test(keyVal)) {
+                    if (cardSpacePattern.test(inputVal)) {
+                        e.preventDefault();
+                        if (inputVal.length <= 19) {
+                            e.target.value = inputVal + ' ';
+                            e.target.selectionStart += 1;
                         }
                     }
                 }
@@ -430,10 +428,14 @@
             function filterNumberInput(e) {
                 var kCode = e.keyCode || e.which;
 
+                console.log('k', kCode);
+
                 // Allow: delete, backspace, tab, escape, enter
                 if ([46, 8, 9, 27, 13].indexOf(kCode) !== -1 ||
-                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                    ([65, 67, 86, 88].indexOf(kCode) !== -1 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X 
+                    ([65, 67, 86, 88].indexOf(kCode) !== -1 && e.ctrlKey) ||
+                    // for safari: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X 
+                    ([97, 99, 118, 120].indexOf(kCode) !== -1 && e.metaKey) ||
                     // Allow: home, end, left, right
                     (kCode >= 35 && kCode <= 39) ||
                     // Allow: space bar, shift
@@ -444,7 +446,7 @@
 
                 var kChar = String.fromCharCode(e.charCode);
                 if (kChar && /\d/.test(kChar)) {
-                    // Ensure that it is a number and stop the keypress
+                    // Ensure that it is a number 
                     return;
                 } else {
                     e.preventDefault();
