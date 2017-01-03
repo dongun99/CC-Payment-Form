@@ -1,0 +1,222 @@
+html,
+body,
+ul,
+ol {
+  margin: 0;
+  padding: 0px; }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box; }
+
+body {
+  font: .85em/1.2em Arial; }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box; }
+
+.demo-container {
+  max-width: 300px;
+  margin: 50px auto; }
+
+#payment-form-container {
+  display: flex;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap; }
+  #payment-form-container input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid #ccc;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    display: block;
+    height: 37px;
+    height: 2.3125rem;
+    margin: 0;
+    padding: 8px;
+    padding: 0.5rem;
+    width: 100%; }
+  #payment-form-container input:FOCUS {
+    border: 1px solid lightblue; }
+  #payment-form-container input.half-line {
+    width: 50%; }
+  #payment-form-container input.half-line + input.half-line {
+    border-left: none; }
+
+#card-container {
+  margin: 16px auto;
+  margin: 1rem auto;
+  perspective: 1000px; }
+  #card-container.flip #card-flipper {
+    transform: rotateY(180deg); }
+
+#card-container,
+#card-front,
+#card-back {
+  width: 300px;
+  height: 175px;
+  font-family: 'Droid Sans Mono', monospace; }
+
+#card-flipper {
+  width: 300px;
+  height: 175px;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0px 0px 12px 5px rgba(0, 0, 0, 0.05);
+  transition: 0.6s;
+  transform-style: preserve-3d; }
+
+#card-front,
+#card-back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  position: absolute;
+  background: #004d91;
+  /* Old browsers */
+  /* FF3.6-15 */
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(45deg, #004d91 0%, #0068b5 50%, #064d91 100%); }
+
+#card-front {
+  z-index: 2;
+  /* for firefox 31 */
+  transform: rotateY(0deg);
+  color: #fff;
+  background-color: #025ba3; }
+
+#card-back {
+  transform: rotateY(180deg); }
+
+#card-icon {
+  position: absolute;
+  display: block;
+  top: 12px;
+  right: 10px; }
+  #card-icon i {
+    font-size: 2rem; }
+
+#ph-cardnumber {
+  position: absolute;
+  display: block;
+  top: 98px;
+  left: 16px;
+  opacity: .8em;
+  font-size: 1.2em;
+  text-shadow: 0px 1px 0px #000; }
+
+#ph-cardholder {
+  position: absolute;
+  display: block;
+  top: 126px;
+  left: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+  opacity: 1em;
+  font-size: .9em;
+  text-shadow: 0px 1px 0px #000;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+#ph-expiry {
+  position: absolute;
+  display: block;
+  top: 126px;
+  left: 228px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: .9em;
+  text-shadow: 0px 1px 0px #000; }
+
+#card-chip {
+  position: absolute;
+  display: block;
+  top: 55px;
+  left: 16px;
+  height: 34px;
+  width: 44px;
+  border-radius: 8px;
+  background: #ffffff;
+  opacity: .7; }
+
+#card-chip span {
+  display: block;
+  height: 14px;
+  margin-top: 10px;
+  border: 1px solid #004d91;
+  border-right: none;
+  border-left: none; }
+  #card-chip span span {
+    display: block;
+    height: 24px;
+    margin: -6px auto 0;
+    border: 1px solid #004d91;
+    background: #fff;
+    width: 70%;
+    border-radius: 8px; }
+
+#ph-valid-thru {
+  position: absolute;
+  display: block;
+  top: 126px;
+  left: 196px;
+  width: 10px;
+  font: .5em/1em Arial;
+  text-transform: uppercase;
+  opacity: 0.6; }
+
+#ph-cvc {
+  position: absolute;
+  display: block;
+  top: 80px;
+  left: 210px;
+  height: 34px;
+  width: 46px;
+  border: 2px solid red;
+  line-height: 2rem;
+  padding-left: 4px;
+  background: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  opacity: .8em; }
+
+#ph-sig-strip {
+  position: absolute;
+  display: block;
+  top: 80px;
+  left: 10px;
+  width: 200px;
+  height: 34px;
+  background: #eee; }
+
+#ph-use-msg {
+  position: absolute;
+  display: block;
+  font: .5em/1em Arial;
+  color: #fff;
+  top: 60px;
+  left: 10px;
+  opacity: .7;
+  text-transform: uppercase; }
+
+#ph-mag-strip {
+  position: absolute;
+  display: block;
+  top: 16px;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: #000;
+  opacity: 0.7; }
+
+.invalid {
+  color: yellow; }
+
+.noborder {
+  border: none !important; }
